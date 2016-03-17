@@ -10,14 +10,13 @@ fi
 touch ../debug.log
 chmod a+w ../debug.log
 
-echo "Do you want to start the Docker build right away? It may take several minutes... [y/n]"
-read ok
-
-if [ "$ok" == "y" ]; then
-  eval "$(docker-machine env default)"
-  docker-compose build
-else
-  echo "You can build the WordPress image anytime by running `docker-compose build` in the docker directory"
+if [[ $(docker-machine status default) != "Running" ]]; then
+  echo "Starting the Docker machine"
+  docker-machine start
 fi
+
+echo "Starting the Docker build. It may take several minutes... [y/n]"
+eval "$(docker-machine env default)"
+docker-compose build
 
 exit 0

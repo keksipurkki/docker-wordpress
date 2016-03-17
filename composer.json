@@ -11,7 +11,9 @@
         "wpackagist-plugin/akismet":"dev-trunk",
         "potsky/pimp-my-log":"*"
     },
-    "post-install-cmd": [
-      "bash docker/bootstrap"
-    ]
+    "scripts": {
+      "post-install-cmd": [
+        "bash -i docker/bootstrap"
+      ]
+    }
 }
