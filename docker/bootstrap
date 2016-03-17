@@ -8,9 +8,6 @@ if (! which docker-compose || ! which docker-machine ) &> /dev/null; then
   exit 1
 fi
 
-touch ../debug.log
-chmod a+w ../debug.log
-
 if [[ $(docker-machine status default) != "Running" ]]; then
   echo "Starting the Docker machine"
   docker-machine start default

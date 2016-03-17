@@ -13,7 +13,7 @@
     },
     "scripts": {
       "post-install-cmd": [
-        "bash bin/bootstrap"
+        "bash docker/bootstrap"
       ]
     }
 }
