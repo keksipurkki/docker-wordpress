@@ -13,12 +13,13 @@ wordpress:
 logging:
   image: php:5.6-apache
   volumes:
-    - ./docker/php.ini:/usr/local/etc/php/php.ini # For the timezone etc
+    - ./docker/php.ini:/usr/local/etc/php/php.ini
+    - ./docker/config.user.php:/var/www/html/logging/config.user.php
     - ./vendor/potsky/pimp-my-log:/var/www/html/logging
     - ./debug.log:/var/log/debug.log:ro
   ports:
-    - 9090:80
-  command: bash -c 'php -S 0.0.0.0:80 -t /var/www/html/logging > /dev/null 2>&1'
+    - 8080:80
+  command: bash -c 'php -S 0.0.0.0:80 -t /var/www/html/logging > /dev/null 2>&1' 
 
 db:
   image: mysql:5.7

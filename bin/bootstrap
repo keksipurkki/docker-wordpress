@@ -1,8 +1,9 @@
 #!/bin/bash
 
 pushd $(dirname ${BASH_SOURCE[0]}) &> /dev/null
+pushd ../docker &> /dev/null
 
-if ! which docker-compose || ! which docker-machine; then
+if (! which docker-compose || ! which docker-machine ) &> /dev/null; then
   echo "You do not have Docker in your \$PATH. Please, check your Docker Toolbox installation" >&2
   exit 1
 fi
@@ -12,10 +13,10 @@ chmod a+w ../debug.log
 
 if [[ $(docker-machine status default) != "Running" ]]; then
   echo "Starting the Docker machine"
-  docker-machine start
+  docker-machine start default
 fi
 
-echo "Starting the Docker build. It may take several minutes... [y/n]"
+echo "Starting the Docker build. It may take several minutes..."
 eval "$(docker-machine env default)"
 docker-compose build
 
