@@ -6,17 +6,17 @@ wordpress:
     - 443:443
     - 80:80
   volumes:
-    - ./wp-config.php:/home/wordpress/public_html/wp-config.php
-    - ./debug.log:/home/wordpress/public_html/wp-content/debug.log
-    - ./wp-content:/home/wordpress/public_html/wp-content
+    - ../wp-config.php:/home/wordpress/public_html/wp-config.php
+    - ../debug.log:/home/wordpress/public_html/wp-content/debug.log
+    - ../wp-content:/home/wordpress/public_html/wp-content
 
 logging:
   image: php:5.6-apache
   volumes:
-    - ./docker/php.ini:/usr/local/etc/php/php.ini
-    - ./docker/config.user.php:/var/www/html/logging/config.user.php
-    - ./vendor/potsky/pimp-my-log:/var/www/html/logging
-    - ./debug.log:/var/log/debug.log:ro
+    - ./php.ini:/usr/local/etc/php/php.ini
+    - ./config.user.php:/var/www/html/logging/config.user.php
+    - ../vendor/potsky/pimp-my-log:/var/www/html/logging
+    - ../debug.log:/var/log/debug.log:ro
   ports:
     - 8080:80
   command: bash -c 'php -S 0.0.0.0:80 -t /var/www/html/logging > /dev/null 2>&1' 

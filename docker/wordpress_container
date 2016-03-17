@@ -47,7 +47,8 @@ if ! \$(wp core is-installed &> /dev/null); then
       --base='/' \
       --title="WordPress en fuego" \
       --admin_user="admin" \
-      --admin_password="dummy"
+      --admin_password="dummy" \
+      --admin_email="dummy@dummy.com"
 
   if [ -r composer.json ]; then
     composer install
