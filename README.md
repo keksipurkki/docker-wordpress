@@ -82,7 +82,7 @@ An example for `mysite.dev`:
 The IP address is that of my default docker machine. Check yours with
 `docker-machine ip default`. 
 
-Now, you can navigate to `http://mysite.dev` and log in as `admin`, password
+Now, you can navigate to `http://mysite.dev/wp-admin` and log in as `admin`, password
 `dummy`.
 
 ## How it works
