@@ -1,0 +1,17 @@
+{
+    "name": "docker/wordpress",
+    "description": "WordPress development en fuego",
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"https://wpackagist.org"
+        }
+    ],
+    "require": {
+        "wpackagist-plugin/akismet":"dev-trunk",
+        "potsky/pimp-my-log":"*"
+    },
+    "post-install-cmd": [
+      "bash docker/bootstrap"
+    ]
+}

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+pushd $(dirname ${BASH_SOURCE[0]}) &> /dev/null
+
+if ! which docker-compose || ! which docker-machine; then
+  echo "You do not have Docker in your \$PATH. Please, check your Docker Toolbox installation" >&2
+  exit 1
+fi
+
+touch ../debug.log
+chmod a+w ../debug.log
+
+echo "Do you want to start the Docker build right away? It may take several minutes... [y/n]"
+read ok
+
+if [ "$ok" == "y" ]; then
+  eval "$(docker-machine env default)"
+  docker-compose build
+else
+  echo "You can build the WordPress image anytime by running `docker-compose build` in the docker directory"
+fi
+
+exit 0

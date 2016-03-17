@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# Wordpress Docker container -- startup script
+# 2016-03-17
+# Author: Elias Toivanen
+# Copyright: Aste Helsinki Oy
+
+dbname() {
+  echo $1 | sed 's,[.\\\/],,g;s,^,docker_,g'
+}
+export -f dbname
+
+pushd /home/wordpress/public_html > /dev/null
+
+: ${WP_LOCAL_DOMAIN?"Error: WP_LOCAL_DOMAIN is not defined!"}
+
+echo "127.0.0.1 $WP_LOCAL_DOMAIN" >> /etc/hosts
+
+# First comes the database connection test
+for ((i=0; i<10; i++)); do
+  sleep 2
+  curl $MYSQL_PORT_3306_TCP_ADDR:3306 &>/dev/null && break
+done
+
+if (( i == 10 )); then
+  echo "Error: no database connection. Aborting..." >&2
+  exit 1
+fi
+
+# Create the correct db if needed
+WP_DB_NAME=$(dbname $WP_LOCAL_DOMAIN)
+echo "Creating a database for ${WP_LOCAL_DOMAIN}"
+
+echo "
+CREATE DATABASE IF NOT EXISTS ${WP_DB_NAME};
+GRANT ALL PRIVILEGES ON ${WP_DB_NAME}.* TO docker@'%';
+" | mysql -h$MYSQL_PORT_3306_TCP_ADDR -uroot -pdummy
+
+export WP_DB_NAME
+
+chown wordpress:wordpress .htaccess
+
+# Then we install WP with WP-CLI if it's not there yet...
+su wordpress << EOF
+if ! \$(wp core is-installed &> /dev/null); then
+  wp core multisite-install \
+      --base='/' \
+      --title="WordPress en fuego" \
+      --admin_user="admin" \
+      --admin_password="dummy"
+
+  if [ -r composer.json ]; then
+    composer install
+  fi
+
+fi
+
+EOF
+
+cat << "EOF"
+
+ __    __              _
+/ / /\ \ \___  _ __ __| |_ __  _ __ ___  ___ ___
+\ \/  \/ / _ \| '__/ _` | '_ \| '__/ _ \/ __/ __|
+ \  /\  / (_) | | | (_| | |_) | | |  __/\__ \__ \
+  \/  \/ \___/|_|  \__,_| .__/|_|  \___||___/___/
+                        |_|
+
+Theme development en fuego...
+
+EOF
+
+cat << EOF
+$(date '+%c')
+
+DEVELOPER ENVIRONMENT:
+----------------------
+$(env | grep -E '^WP_|^PHP|^MYSQL' | sort | column -t -s=)
+
+MYSQL DATABASE:
+---------------
+Listens for connections: $(curl $MYSQL_PORT_3306_TCP_ADDR:3306 &>/dev/null && echo yes || echo no)
+
+HOSTS ($(hostname))
+-------------------
+$(getent ahostsv4 | sort -k2)
+
+EOF
+
+service memcached start
+
+# Decide what to do with the container
+if (( $# == 0 )); then
+  mode=apache # Default to apache
+else
+  mode=$1
+fi
+
+case "$mode" in
+  apache)
+    source /etc/apache2/envvars
+    apachectl -k restart -D FOREGROUND
+    ;;
+  bash)
+    su wordpress
+    ;;
+  wp-shell)
+    wp shell
+    ;;
+  mysql)
+    wp db cli
+    ;;
+  *)
+    echo "Error: Cannot start the container. Got an unsupported mode \`$mode'." >&2
+    ;;
+esac
+
+echo "That's all folks!"
+exit 0
