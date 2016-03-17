@@ -14,13 +14,13 @@ db:
 # or the IP address of the docker-machine (Win, Mac OSX) to your development
 # domains so that you can access the sites from your browser. If you're on Mac
 # OSX, give Gas Mask (https://github.com/2ndalpha/gasmask) a try.
-mytheme:
+mysite:
   extends: 
     file: ./docker/docker-compose.yml
     service: wordpress
   links:
     - db:mysql
   environment:
-    WP_LOCAL_DOMAIN: mytheme.dev
-    WP_ASSETS_DOMAIN: some.domain.com
+    WP_LOCAL_DOMAIN: mysite.dev
+    WP_ASSETS_DOMAIN: mysite.com
 
