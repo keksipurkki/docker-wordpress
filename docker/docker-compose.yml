@@ -13,7 +13,7 @@ logging:
     - ./php.ini:/usr/local/etc/php/php.ini
     - ./config.user.php:/var/www/html/logging/config.user.php
     - ../vendor/potsky/pimp-my-log:/var/www/html/logging
-    - ../wp-config/debug.log:/var/log/debug.log:ro
+    - ../wp-content/debug.log:/var/log/debug.log:ro
   ports:
     - 8080:80
   command: bash -c 'php -S 0.0.0.0:80 -t /var/www/html/logging > /dev/null 2>&1'
