@@ -50,9 +50,6 @@ if ! \$(wp core is-installed &> /dev/null); then
       --admin_password="dummy" \
       --admin_email="dummy@dummy.com"
 
-  if [ -r composer.json ]; then
-    composer install
-  fi
 
 fi
 
@@ -99,7 +96,11 @@ fi
 
 case "$mode" in
   apache)
-    source /etc/apache2/envvars
+    # https://github.com/fedora-cloud/Fedora-Dockerfiles/blob/master/apache/run-apache.sh
+    # Make sure we're not confused by old, incompletely-shutdown httpd
+    # context after restarting the container.  httpd won't start correctly
+    # if it thinks it is already running.
+    rm -f /run/apache2/apache2.pid
     apachectl -k restart -D FOREGROUND
     ;;
   bash)

@@ -99,4 +99,4 @@ COPY htaccess /home/wordpress/public_html/.htaccess
 
 WORKDIR /home/wordpress/public_html
 COPY wordpress_container /wordpress_container
-ENTRYPOINT bash /wordpress_container 
+ENTRYPOINT ["bash", "/wordpress_container"]
