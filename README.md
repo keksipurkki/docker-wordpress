@@ -85,6 +85,31 @@ The IP address is that of my default docker machine. Check yours with
 Now, you can navigate to `http://mysite.dev/wp-admin` and log in as `admin`, password
 `dummy`.
 
+## Logging
+
+The module comes prepackaged with [Pimp my log](http://pimpmylog.com/) which you can use to display your logs. To enable it, navigate to 
+
+```sh 
+cd docker/
+```
+
+and peek inside docker-compose.yml. Logs are stored in wp-content/debug.log, which we will link to Pimp my log. Run 
+
+```sh 
+docker-compose -f docker/docker-compose.yml up logging
+```
+
+To get your docker up and running - you should see the docker_logging_1 container (or similiar) pop up. Pimp my log runs at domain:8080/logging. You can find this out by typing
+
+```sh
+echo $(docker-machine ip default):8080/logging
+```
+
+On your console.
+
+Happy logging!
+
+
 ## How it works
 
 1. The WordPress installations are linked with a common MySQL container that
